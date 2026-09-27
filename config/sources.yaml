@@ -1,0 +1,31 @@
+# Excel 汇总看板 —— 数据源配置
+# 每个 source 描述"一类 Excel 怎么读"；新增一类表 = 加一段配置，不改代码。
+
+sources:
+  - id: 交易历史
+    # Excel 数据目录（相对仓库根目录，支持通配符）
+    glob: "data/*.xlsx"
+    # sheet：0 表示第一个工作表；也可以直接写工作表名字，例如 "明细"
+    sheet: 0
+    # 表头所在行（1 表示第一行；Excel 里在第 3 行就写 3）
+    header_row: 1
+    # 跳过包含这些字样的文件（临时文件 / 模板）
+    skip_contains: ["~$", "_模板"]
+    key:
+      # ① 行内 Key 列：命中任一别名就用它（一个文件里混多个产品时用）
+      column_aliases: ["产品Key", "产品KEY", "产品代码", "代码", "Key", "key", "产品编码"]
+      # ② 表内单元格：例如 B1 写着产品代码（不用可设为 null）
+      cell: null
+      # ③ 文件名兜底：默认取第一个下划线之前的内容，例 512880_证券ETF.xlsx -> 512880
+      filename_regex: "^(?P<key>[^_]+)"
+    date_column_aliases: ["交易日期", "日期", "成交日期", "date", "Date"]
+    time_column_aliases: ["交易时间", "时间", "time", "Time"]
+
+settings:
+  lake_dir: "lake"
+  manifest: "lake/manifest.duckdb"
+  workers: 8          # 并行读取的进程数（建议 = CPU 物理核心数）
+  top_n: 20           # 排行图默认取前 N
+  max_filter_values: 50  # 文本列的取值数超过这个就不做下拉筛选
+
+

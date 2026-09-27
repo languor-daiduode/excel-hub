@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# Generated data products
+lake/
+*.parquet
+*.duckdb
+*.log
+
+# Business Excel files: keep only the two sanitized examples
+data/*.xlsx
+!data/512880_*.xlsx
+!data/159915_*.xlsx
+
+# OS
+.DS_Store
+Thumbs.db
